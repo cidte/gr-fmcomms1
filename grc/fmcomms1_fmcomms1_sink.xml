@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <block>
-  <name>FMCOMMS1</name>
+  <name>FMCOMMS1_SINK</name>
   <key>fmcomms1_fmcomms1_sink</key>
-  <category>FMCOMMS1</category>
+  <category>fmcomms1</category>
+  <flags>throttle</flags>
   <import>import fmcomms1</import>
   <make>fmcomms1.fmcomms1_sink($uri, $frequency, $samplerate, $bandwidth, $channels, $buffer_size, $interpolation - 1, $cyclic)</make>
+  <callback>set_params($frequency, $samplerate, $bandwidth)</callback>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name

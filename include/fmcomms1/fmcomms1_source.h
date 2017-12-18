@@ -67,6 +67,9 @@ namespace gr {
           unsigned int decimation = 0);
 
       virtual void set_buffer_size(unsigned int buffer_size) = 0;
+
+      virtual void set_params(unsigned long frequency, 
+              unsigned long samplerate, unsigned long bandwidth) = 0;
     };
 
   } // namespace fmcomms1

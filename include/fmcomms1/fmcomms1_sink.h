@@ -66,6 +66,9 @@ namespace gr {
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
           bool cyclic = false);
+
+      virtual void set_params(unsigned long frequency, 
+                  unsigned long samplerate, unsigned long bandwidth) = 0;
     };
 
   } // namespace fmcomms1

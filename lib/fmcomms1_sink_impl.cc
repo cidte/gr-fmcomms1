@@ -87,18 +87,6 @@ namespace gr {
 
     }
 
-    std::vector<std::string> fmcomms1_sink_impl::get_channels_vector(
-                                      bool chn1_en, bool chn2_en)
-    {
-      std::vector<std::string> channels;
-      if(chn1_en)
-        channels.push_back("voltage0")
-      if(chn2_en)
-        channels.push_back("voltage1")
-
-      return channels;
-    }
-
     /*
      * The private constructor
      */
@@ -232,7 +220,7 @@ namespace gr {
     }
 
     int
-    fmcomms1_sink_impl::work_from(int noutput_items,
+    fmcomms1_sink_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
@@ -259,19 +247,6 @@ namespace gr {
 
       consume_each(buffer_size / (interpolation + 1));
       return 0;
-    }
-
-    int fmcomms1_sink_impl::work(int noutput_items,
-        gr_vector_const_void_star &input_items,
-        gr_vector_void_star &output_items)
-    {
-      int ret = fmcomms1_sink_impl::work_from(noutput_items, input_items,
-          output_items);
-
-      if (ret < 0 || !cyclic)
-        return ret;
-      else
-        return 0;
     }
 
     void
