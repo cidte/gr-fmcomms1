@@ -36,25 +36,25 @@ namespace gr {
     fmcomms1_source::sptr
     fmcomms1_source::make(const std::string &uri, unsigned long frequency, 
               unsigned long samplerate, unsigned long bandwidth, 
-              const std::vector<std::string> &channels, 
+              bool ch1_en, bool ch2_en,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(fmcomms1_source_impl::get_context(uri), true,
                   frequency, samplerate, bandwidth, 
-                  channels, buffer_size, decimation));
+                  ch1_en, ch2_en, buffer_size, decimation));
     }
 
     fmcomms1_source::sptr
     fmcomms1_source::make_from(struct iio_context *ctx,
               unsigned long frequency, unsigned long samplerate,
               unsigned long bandwidth,
-              const std::vector<std::string> &channels,
+              bool ch1_en, bool ch2_en,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(ctx, false, frequency, samplerate,
-                  bandwidth, channels,
+                  bandwidth, ch1_en, ch2_en,
                   buffer_size, decimation));
     }
 
@@ -133,6 +133,19 @@ namespace gr {
       set_parameters(this->dev, params_dev);
     }
 
+    std::vector<std::string> fmcomms1_source_impl::get_channels_vector(
+                                                bool ch1_en, bool ch2_en)
+    {
+      std::vector<std::string> chns;
+
+      if(ch1_en)
+        chns.push_back("voltage0");
+      if(ch2_en)
+        chns.push_back("voltage1");
+
+      return chns;
+    }
+
     /* Función para establecer el tamaño del búfer */
     void fmcomms1_source_impl::set_buffer_size(unsigned int _buffer_size)
     {
@@ -185,7 +198,7 @@ namespace gr {
               bool destroy_ctx, 
               unsigned long frequency, unsigned long samplerate, 
               unsigned long bandwidth,
-              const std::vector<std::string> &channels,
+              bool ch1_en, bool ch2_en,
               unsigned int buffer_size, unsigned int decimation)
       : gr::sync_block("fmcomms1_source",
               gr::io_signature::make(0, 0, 0),
@@ -226,6 +239,8 @@ namespace gr {
       iio_channel_enable(chn0);
       iio_channel_enable(chn1);
       iio_channel_enable(chn2);
+
+      channels = fmcomms1_source_impl::get_channels_vector(ch1_en, ch2_en);
 
       //** Activación de los canales del dispositivo de recepción **//
       // Primero se desactivan todos, si están activados

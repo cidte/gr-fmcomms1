@@ -54,7 +54,7 @@ namespace gr {
        */
       static sptr make(const std::string &uri, unsigned long frequency, 
           unsigned long samplerate, unsigned long bandwidth, 
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
           bool cyclic = false);
@@ -62,7 +62,7 @@ namespace gr {
       static sptr make_from(struct iio_context *ctx, 
           unsigned long frequency, unsigned long samplerate, 
           unsigned long bandwidth,
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
           bool cyclic = false);

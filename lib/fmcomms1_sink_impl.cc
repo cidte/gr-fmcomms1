@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,29 +34,30 @@ namespace gr {
     fmcomms1_sink::sptr
     fmcomms1_sink::make(const std::string &uri, unsigned long frequency, 
           unsigned long samplerate, unsigned long bandwidth, 
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en, 
           unsigned int buffer_size, 
           unsigned int interpolation,
           bool cyclic)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_sink_impl(fmcomms1_source_impl::get_context(uri), true,
-                      frequency, samplerate, bandwidth,
-                      channels, buffer_size, interpolation, cyclic));
+                      frequency, samplerate, bandwidth, ch1_en, ch2_en,
+                      buffer_size, interpolation, cyclic));
     }
 
     fmcomms1_sink::sptr
     fmcomms1_sink::make_from(struct iio_context *ctx, 
           unsigned long frequency, unsigned long samplerate, 
           unsigned long bandwidth,
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en,
           unsigned int buffer_size, 
           unsigned int interpolation,
           bool cyclic)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_sink_impl(ctx, false, frequency, samplerate,
-                      bandwidth, channels, buffer_size, interpolation, cyclic));
+                      bandwidth, ch1_en, ch2_en, 
+                      buffer_size, interpolation, cyclic));
     }
 
     /* Función para establecer los parámetros de los dispositivos de transmisión */
@@ -93,7 +94,7 @@ namespace gr {
     fmcomms1_sink_impl::fmcomms1_sink_impl(struct iio_context *ctx, 
           bool destroy_ctx, unsigned long frequency, 
           unsigned long samplerate, unsigned long bandwidth,
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en,
           unsigned int buffer_size, 
           unsigned int interpolation, bool cyclic)
       : gr::sync_block("fmcomms1_sink",
@@ -125,28 +126,20 @@ namespace gr {
       }
 
 
-      //** Opcional, puede ir en la interfaz del bloque **//
-      
+      /** Estos canales son necesarios para la transmisión, por ello no son
+      selectos como los del dispositivo 'dev' **/
       // Canal del dispositivo phy de la tarjeta-
       struct iio_channel *chn0 = iio_device_find_channel(phy, "altvoltage0", true);
-
-
-      // Canal 1 del vga
-      //struct iio_channel *chn2 = iio_device_find_channel(vga, "voltage1", true);
-
-      struct iio_channel *chn1 = iio_device_find_channel(dev, "voltage0", true);
-      struct iio_channel *chn2 = iio_device_find_channel(dev, "voltage1", true);
+      // Canal del vga
       struct iio_channel *chn3 = iio_device_find_channel(vga, "altvoltage7", true);
-
-      
       iio_channel_disable(chn0);
       iio_channel_disable(chn3);
-      
       //Activación de los canales
       iio_channel_enable(chn0);
       iio_channel_enable(chn3);
 
-      //** Activación de los canales del dispositivo de transmisión **//
+      /** Activación de los canales del dispositivo DAC, puede ser sólo uno o ambos **/
+      channels = fmcomms1_source_impl::get_channels_vector(ch1_en, ch2_en);
       // Primero se desactivan todos, si están activados
       nb_channels = iio_device_get_channels_count(dev);
       for (i = 0; i < nb_channels; i++)

@@ -5,7 +5,7 @@
   <category>fmcomms1</category>
   <flags>throttle</flags>
   <import>import fmcomms1</import>
-  <make>fmcomms1.fmcomms1_sink($uri, $frequency, $samplerate, $bandwidth, $channels, $buffer_size, $interpolation - 1, $cyclic)</make>
+  <make>fmcomms1.fmcomms1_sink($uri, $frequency, $samplerate, $bandwidth, $ch1_en, $ch2_en, $buffer_size, $interpolation - 1, $cyclic)</make>
   <callback>set_params($frequency, $samplerate, $bandwidth)</callback>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
@@ -41,10 +41,21 @@
   </param>
 
   <param>
-    <name>Channels</name>
-    <key>channels</key>
-    <value>[]</value>
-    <type>raw</type>
+    <name>Channel 1 Enabled</name>
+    <key>ch1_en</key>
+    <value>True</value>
+    <type>enum</type>
+    <option><name>True</name><key>True</key></option>
+    <option><name>False</name><key>False</key></option>
+  </param>
+
+  <param>
+    <name>Channel 2 Enabled</name>
+    <key>ch2_en</key>
+    <value>True</value>
+    <type>enum</type>
+    <option><name>True</name><key>True</key></option>
+    <option><name>False</name><key>False</key></option>
   </param>
 
   <param>
@@ -74,7 +85,7 @@
   <check>$interpolation > 0</check>
 
   <!-- We need at least one channel -->
-  <check>len($channels) &gt; 0</check>
+  <check>sum([$ch1_en, $ch2_en]) &gt; 0</check>
 
   <!-- Make one 'sink' node per input. Sub-nodes:
        * name (an identifier for the GUI)
@@ -84,6 +95,6 @@
   <sink>
     <name>in</name>
     <type>short</type>
-    <nports>len($channels)</nports>
+    <nports>sum([$ch1_en, $ch2_en])</nports>
   </sink>
 </block>

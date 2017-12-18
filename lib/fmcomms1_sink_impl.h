@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2017 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ namespace gr {
       void channel_write(const struct iio_channel *chn,
            const void *src, size_t len);
       bool cyclic;
+      std::vector<std::string> channels;
 
      protected:
       struct iio_context *ctx;
@@ -51,7 +52,7 @@ namespace gr {
       fmcomms1_sink_impl(struct iio_context *ctx, 
           bool destroy_ctx, unsigned long frequency, 
           unsigned long samplerate, unsigned long bandwidth,
-          const std::vector<std::string> &channels, 
+          bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
           bool cyclic = false);

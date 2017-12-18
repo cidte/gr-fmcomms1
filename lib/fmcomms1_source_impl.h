@@ -46,6 +46,7 @@ namespace gr {
       unsigned long items_in_buffer;
       off_t byte_offset;
       unsigned long sample_counter;
+      std::vector<std::string> channels;
 
      protected:
       struct iio_context *ctx;
@@ -61,7 +62,7 @@ namespace gr {
         bool destroy_ctx,
         unsigned long frequency, unsigned long samplerate,
         unsigned long bandwidth,
-        const std::vector<std::string> &channels,
+        bool ch1_en, bool ch2_en,
         unsigned int buffer_size = DEFAULT_BUFFER_SIZE,
         unsigned int decimation = 0);
       ~fmcomms1_source_impl();
@@ -83,6 +84,8 @@ namespace gr {
       bool stop();
 
       static struct iio_context * get_context(const std::string &uri);
+      static std::vector<std::string> get_channels_vector(
+          bool ch1_en, bool ch2_en);
     };
 
   } // namespace fmcomms1
