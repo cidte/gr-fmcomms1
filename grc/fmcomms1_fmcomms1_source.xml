@@ -5,8 +5,8 @@
   <category>fmcomms1</category>
   <flags>throttle</flags>
   <import>import fmcomms1</import>
-  <make>fmcomms1.fmcomms1_source($uri, $frequency, $samplerate, $bandwidth, $ch1_en, $ch2_en, $buffer_size, $decimation - 1)</make>
-  <callback>set_params($frequency, $samplerate, $bandwidth)</callback>
+  <make>fmcomms1.fmcomms1_source($uri, $frequency, $samplerate, $bandwidth, $ch1_en, $ch2_en, $gain, $buffer_size, $decimation - 1)</make>
+  <callback>set_params($frequency, $samplerate, $bandwidth, $gain)</callback>
    <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
@@ -66,6 +66,13 @@
   </param>
 
   <param>
+    <name>Gain</name>
+    <key>gain</key>
+    <value>10.0</value>
+    <type>real</type>
+  </param>
+
+  <param>
     <name>Decimation</name>
     <key>decimation</key>
     <value>1</value>
@@ -74,6 +81,10 @@
   
   <!-- Avoid divisions by zero -->
   <check>$decimation > 0</check>
+
+  <!-- Check gain is between 4.5 and 20.5 -->
+  <check>$gain &gt; 4.4</check>
+  <check>$gain &lt; 20.6</check>
   
   <!-- At least one channel -->
   <check>sum([$ch1_en, $ch2_en]) &gt; 0</check>

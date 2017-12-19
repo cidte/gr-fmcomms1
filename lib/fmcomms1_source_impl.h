@@ -63,12 +63,13 @@ namespace gr {
         unsigned long frequency, unsigned long samplerate,
         unsigned long bandwidth,
         bool ch1_en, bool ch2_en,
+        double gain,
         unsigned int buffer_size = DEFAULT_BUFFER_SIZE,
         unsigned int decimation = 0);
       ~fmcomms1_source_impl();
 
-      void set_params(unsigned long frequency,
-            unsigned long samplerate, unsigned long bandwidth);
+      void set_params(unsigned long frequency, unsigned long samplerate, 
+                      unsigned long bandwidth, double gain);
 
       static void set_parameters(struct iio_device *phy,
             const std::vector<std::string> &params);

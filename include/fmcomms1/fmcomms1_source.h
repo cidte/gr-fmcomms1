@@ -56,20 +56,22 @@ namespace gr {
       static sptr make(const std::string &uri, unsigned long frequency, 
           unsigned long samplerate, unsigned long bandwidth, 
           bool ch1_en, bool ch2_en,
-          unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
+          double gain,
+          unsigned int buffer_size = DEFAULT_BUFFER_SIZE,
           unsigned int decimation = 0);
 
       static sptr make_from(struct iio_context *ctx, 
           unsigned long frequency, unsigned long samplerate, 
           unsigned long bandwidth,
           bool ch1_en, bool ch2_en,
+          double gain,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int decimation = 0);
 
       virtual void set_buffer_size(unsigned int buffer_size) = 0;
 
-      virtual void set_params(unsigned long frequency, 
-              unsigned long samplerate, unsigned long bandwidth) = 0;
+      virtual void set_params(unsigned long frequency, unsigned long samplerate, 
+                              unsigned long bandwidth, double gain) = 0;
     };
 
   } // namespace fmcomms1

@@ -36,26 +36,26 @@ namespace gr {
     fmcomms1_source::sptr
     fmcomms1_source::make(const std::string &uri, unsigned long frequency, 
               unsigned long samplerate, unsigned long bandwidth, 
-              bool ch1_en, bool ch2_en,
+              bool ch1_en, bool ch2_en, double gain,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(fmcomms1_source_impl::get_context(uri), true,
-                  frequency, samplerate, bandwidth, 
-                  ch1_en, ch2_en, buffer_size, decimation));
+                  frequency, samplerate, bandwidth, ch1_en, ch2_en, 
+                  gain, buffer_size, decimation));
     }
 
     fmcomms1_source::sptr
     fmcomms1_source::make_from(struct iio_context *ctx,
               unsigned long frequency, unsigned long samplerate,
-              unsigned long bandwidth,
-              bool ch1_en, bool ch2_en,
+              unsigned long bandwidth, bool ch1_en, bool ch2_en,
+              double gain,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(ctx, false, frequency, samplerate,
                   bandwidth, ch1_en, ch2_en,
-                  buffer_size, decimation));
+                  gain, buffer_size, decimation));
     }
 
     /* Función recursiva para establecer los parámetros de la tarjeta */
@@ -105,7 +105,7 @@ namespace gr {
     
     /* Función para establecer los parámetros de los dispositivos */
     void fmcomms1_source_impl::set_params(unsigned long frequency,
-            unsigned long samplerate, unsigned long bandwidth)
+            unsigned long samplerate, unsigned long bandwidth, double gain)
     {
       std::vector<std::string> params_dev, params_phy, params_vga;
 
@@ -124,9 +124,9 @@ namespace gr {
 
       // Parámetros del dispositivo vga
       params_vga.push_back("out_voltage0_hardwaregain="+
-        boost::to_string(20.0));
+        boost::to_string(gain));
       params_vga.push_back("out_voltage1_hardwaregain="+
-        boost::to_string(20.0));
+        boost::to_string(gain));
 
       set_parameters(this->vga, params_vga);
       set_parameters(this->phy, params_phy);
@@ -197,8 +197,8 @@ namespace gr {
     fmcomms1_source_impl::fmcomms1_source_impl(struct iio_context *ctx, 
               bool destroy_ctx, 
               unsigned long frequency, unsigned long samplerate, 
-              unsigned long bandwidth,
-              bool ch1_en, bool ch2_en,
+              unsigned long bandwidth, bool ch1_en, 
+              bool ch2_en, double gain,
               unsigned int buffer_size, unsigned int decimation)
       : gr::sync_block("fmcomms1_source",
               gr::io_signature::make(0, 0, 0),
@@ -277,7 +277,7 @@ namespace gr {
         }
       }
 
-      set_params(frequency, samplerate, bandwidth);
+      set_params(frequency, samplerate, bandwidth, gain);
       set_output_multiple(0x400);
     }
 
