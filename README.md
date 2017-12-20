@@ -1,4 +1,4 @@
-# Project Title
+# gr-fmcomms1
 This is a source and sink blocks to work with the AD-FMCOMMS1-EBZ board in GNU Radio.
 
 ## Getting started
