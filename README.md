@@ -7,47 +7,59 @@ These instructions will get you a copy of the project up and running on your loc
 
 First, you have to do a git clone on this repository:
 
-'''
+
+```
 git clone https://github.com/cidte/gr-fmcomms1.git
-'''
+
+```
 
 ### Prerequisites
 You need to install some dependencies before you can use the blocks, these are the most important:
-'''
+
+```
 libiio (https://wiki.analog.com/resources/tools-software/linux-software/libiio)
 libad9361-iio (https://github.com/analogdevicesinc/libad9361-iio)
 GNU Radio (https://www.gnuradio.org)
 gr-iio (https://github.com/analogdevicesinc/gr-iio)
-'''
+
+```
 
 ### Building and installing
 To build the blocks into GNU Radio you need to do a build dir and change directory into it
 
-'''
+
+```
 $mkdir build
 
 $cd build
-'''
+
+```
 
 Then you build the project into this directory:
 
-'''
+
+```
 $cmake ../
 
 $make
-'''
+
+```
 
 Then you can install the project:
 
-'''
+
+```
 $make install
-'''
+
+```
 
 It is recommended to reconfigure the dynamic linker with:
 
-'''
+
+```
 $ldconfig
-'''
+
+```
 
 NOTE: You may need sudo permissions to install the project and reconfigure the linker.
 
