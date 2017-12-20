@@ -16,7 +16,7 @@ FIND_PATH(
 # .so files search in listed paths
 FIND_LIBRARY(
     IIO_LIBRARIES
-    NAMES libiio.so.0.11
+    NAMES gnuradio-iio
     HINTS $ENV{IIO_DIR}/lib
         ${PC_IIO_LIBDIR}
     PATHS ${CMAKE_INSTALL_PREFIX}/lib
