@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 CIDTE.
+ * Copyright 2018 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,26 +35,26 @@ namespace gr {
     /* Constructor */
     fmcomms1_source::sptr
     fmcomms1_source::make(const std::string &uri, unsigned long frequency, 
-              unsigned long samplerate, unsigned long bandwidth, 
-              bool ch1_en, bool ch2_en, double gain,
+              unsigned long samplerate, bool ch1_en,
+              bool ch2_en, double gain,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(fmcomms1_source_impl::get_context(uri), true,
-                  frequency, samplerate, bandwidth, ch1_en, ch2_en, 
+                  frequency, samplerate, ch1_en, ch2_en, 
                   gain, buffer_size, decimation));
     }
 
     fmcomms1_source::sptr
     fmcomms1_source::make_from(struct iio_context *ctx,
               unsigned long frequency, unsigned long samplerate,
-              unsigned long bandwidth, bool ch1_en, bool ch2_en,
+              bool ch1_en, bool ch2_en,
               double gain,
               unsigned int buffer_size, unsigned int decimation)
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_source_impl(ctx, false, frequency, samplerate,
-                  bandwidth, ch1_en, ch2_en,
+                  ch1_en, ch2_en,
                   gain, buffer_size, decimation));
     }
 
@@ -105,28 +105,26 @@ namespace gr {
     
     /* Función para establecer los parámetros de los dispositivos */
     void fmcomms1_source_impl::set_params(unsigned long frequency,
-            unsigned long samplerate, unsigned long bandwidth, double gain)
+            unsigned long samplerate, double gain)
     {
-      std::vector<std::string> params_dev, params_phy, params_vga;
+      std::vector<std::string> params_dev, params_phy, params_vga, params_hex;
 
       // Parámetros del dispositivo
       params_dev.push_back("in_voltage_sampling_frequency="+
               boost::to_string(samplerate));
-      params_dev.push_back("in_voltage0_calibbias="+
-              boost::to_string(bandwidth));
-      params_dev.push_back("in_voltage1_calibbias="+
-              boost::to_string(bandwidth));
       
       // Parámetros del dispositivo phy
       params_phy.push_back("out_altvoltage0_frequency="+
               boost::to_string(frequency));
-
 
       // Parámetros del dispositivo vga
       params_vga.push_back("out_voltage0_hardwaregain="+
         boost::to_string(gain));
       params_vga.push_back("out_voltage1_hardwaregain="+
         boost::to_string(gain));
+
+      params_hex.push_back("out_altvoltage9_RX_LO_REF_CLK_frequency="+
+        boost::to_string(frequency));
 
       set_parameters(this->vga, params_vga);
       set_parameters(this->phy, params_phy);
@@ -197,8 +195,7 @@ namespace gr {
     fmcomms1_source_impl::fmcomms1_source_impl(struct iio_context *ctx, 
               bool destroy_ctx, 
               unsigned long frequency, unsigned long samplerate, 
-              unsigned long bandwidth, bool ch1_en, 
-              bool ch2_en, double gain,
+              bool ch1_en, bool ch2_en, double gain,
               unsigned int buffer_size, unsigned int decimation)
       : gr::sync_block("fmcomms1_source",
               gr::io_signature::make(0, 0, 0),
@@ -216,6 +213,7 @@ namespace gr {
       dev = iio_context_find_device(ctx, "cf-ad9643-core-lpc");
       phy = iio_context_find_device(ctx, "adf4351-rx-lpc");
       vga = iio_context_find_device(ctx, "ad8366-lpc");
+      hex = iio_context_find_device(ctx, "ad9523-lpc");
 
       if(!dev || !phy || !vga)
       {
@@ -277,7 +275,7 @@ namespace gr {
         }
       }
 
-      set_params(frequency, samplerate, bandwidth, gain);
+      set_params(frequency, samplerate, gain);
       set_output_multiple(0x400);
     }
 

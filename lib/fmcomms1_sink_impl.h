@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 CIDTE.
+ * Copyright 2018 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ namespace gr {
      public:
       fmcomms1_sink_impl(struct iio_context *ctx, 
           bool destroy_ctx, unsigned long frequency, 
-          unsigned long samplerate, unsigned long bandwidth,
+          unsigned long samplerate,
           bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
@@ -59,7 +59,7 @@ namespace gr {
       ~fmcomms1_sink_impl();
 
       void set_params(unsigned long frequency,
-            unsigned long samplerate, unsigned long bandwidth);
+            unsigned long samplerate);
       
       // Where all the action really happens
       int work(int noutput_items,

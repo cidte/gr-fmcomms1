@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 CIDTE.
+ * Copyright 2018 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,6 @@ namespace gr {
     {
      private:
       void channel_read(const struct iio_channel *chn, void *dst, size_t len);
-
       boost::mutex iio_mutex;
       unsigned long items_in_buffer;
       off_t byte_offset;
@@ -50,7 +49,7 @@ namespace gr {
 
      protected:
       struct iio_context *ctx;
-      struct iio_device *dev, *phy, *vga;
+      struct iio_device *dev, *phy, *vga, *hex;
       struct iio_buffer *buf;
       std::vector<struct iio_channel*> channel_list;
       unsigned int buffer_size;
@@ -61,15 +60,13 @@ namespace gr {
       fmcomms1_source_impl(struct iio_context *ctx, 
         bool destroy_ctx,
         unsigned long frequency, unsigned long samplerate,
-        unsigned long bandwidth,
         bool ch1_en, bool ch2_en,
         double gain,
         unsigned int buffer_size = DEFAULT_BUFFER_SIZE,
         unsigned int decimation = 0);
       ~fmcomms1_source_impl();
 
-      void set_params(unsigned long frequency, unsigned long samplerate, 
-                      unsigned long bandwidth, double gain);
+      void set_params(unsigned long frequency, unsigned long samplerate, double gain);
 
       static void set_parameters(struct iio_device *phy,
             const std::vector<std::string> &params);

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 CIDTE.
+ * Copyright 2018 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ namespace gr {
 
     fmcomms1_sink::sptr
     fmcomms1_sink::make(const std::string &uri, unsigned long frequency, 
-          unsigned long samplerate, unsigned long bandwidth, 
+          unsigned long samplerate, 
           bool ch1_en, bool ch2_en, 
           unsigned int buffer_size, 
           unsigned int interpolation,
@@ -41,14 +41,13 @@ namespace gr {
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_sink_impl(fmcomms1_source_impl::get_context(uri), true,
-                      frequency, samplerate, bandwidth, ch1_en, ch2_en,
+                      frequency, samplerate, ch1_en, ch2_en,
                       buffer_size, interpolation, cyclic));
     }
 
     fmcomms1_sink::sptr
     fmcomms1_sink::make_from(struct iio_context *ctx, 
           unsigned long frequency, unsigned long samplerate, 
-          unsigned long bandwidth,
           bool ch1_en, bool ch2_en,
           unsigned int buffer_size, 
           unsigned int interpolation,
@@ -56,24 +55,20 @@ namespace gr {
     {
       return gnuradio::get_initial_sptr
         (new fmcomms1_sink_impl(ctx, false, frequency, samplerate,
-                      bandwidth, ch1_en, ch2_en, 
+                      ch1_en, ch2_en, 
                       buffer_size, interpolation, cyclic));
     }
 
     /* Función para establecer los parámetros de los dispositivos de transmisión */
     void
     fmcomms1_sink_impl::set_params(unsigned long frequency,
-              unsigned long samplerate, unsigned long bandwidth)
+              unsigned long samplerate)
     {
       std::vector<std::string> params_dev, params_phy, params_vga;
 
       // Parámetros del dispositivo de transmisión
       params_dev.push_back("out_altvoltage_sampling_frequency="+
-              boost::to_string(frequency));
-      params_dev.push_back("out_voltage0_calibbias="+
-              boost::to_string(bandwidth/1000000));
-      params_dev.push_back("out_voltage1_calibbias="+
-              boost::to_string(bandwidth/1000000));
+              boost::to_string(frequency));      
 
       params_vga.push_back("out_altvoltage7_ADC_SYNC_CLK_frequency="+
               boost::to_string(-1*frequency));
@@ -93,7 +88,7 @@ namespace gr {
      */
     fmcomms1_sink_impl::fmcomms1_sink_impl(struct iio_context *ctx, 
           bool destroy_ctx, unsigned long frequency, 
-          unsigned long samplerate, unsigned long bandwidth,
+          unsigned long samplerate,
           bool ch1_en, bool ch2_en,
           unsigned int buffer_size, 
           unsigned int interpolation, bool cyclic)
@@ -176,7 +171,7 @@ namespace gr {
       }
 
 
-      set_params(frequency, samplerate, bandwidth);
+      set_params(frequency, samplerate);
 
       buf = iio_device_create_buffer(dev, buffer_size, cyclic);
 

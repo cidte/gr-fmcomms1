@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2017 CIDTE.
+ * Copyright 2018 CIDTE.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(const std::string &uri, unsigned long frequency, 
-          unsigned long samplerate, unsigned long bandwidth, 
+          unsigned long samplerate, 
           bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
@@ -61,14 +61,13 @@ namespace gr {
 
       static sptr make_from(struct iio_context *ctx, 
           unsigned long frequency, unsigned long samplerate, 
-          unsigned long bandwidth,
           bool ch1_en, bool ch2_en,
           unsigned int buffer_size = DEFAULT_BUFFER_SIZE, 
           unsigned int interpolation = 0,
           bool cyclic = false);
 
       virtual void set_params(unsigned long frequency, 
-                  unsigned long samplerate, unsigned long bandwidth) = 0;
+                  unsigned long samplerate) = 0;
     };
 
   } // namespace fmcomms1
